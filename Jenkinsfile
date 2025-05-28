@@ -2,7 +2,7 @@ pipeline {
     agent any  // Use any available agent
     tools {
         gradle 'Gradle'  // Ensure this matches the name configured in Jenkins
-        jdk 'JDK'
+        jdk 'Java Development Kit'
     }
     stages {
         stage('Checkout') {
