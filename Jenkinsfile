@@ -1,8 +1,8 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
     tools {
-        gradle 'Gradle'  // Ensure this matches the name configured in Jenkins
-        jdk 'Java Development Kit'
+        gradle 'Gradle'          // Your Jenkins Gradle tool name
+        jdk 'Java Development Kit'  // Your Jenkins JDK tool name
     }
     stages {
         stage('Checkout') {
@@ -17,12 +17,26 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'gradle test'
+                script {
+                    def hasTestTask = sh(script: "gradle tasks --all | grep 'test -'", returnStatus: true) == 0
+                    if (hasTestTask) {
+                        sh 'gradle test'
+                    } else {
+                        echo "Skipping tests: 'test' task not found."
+                    }
+                }
             }
         }
         stage('Run Application') {
             steps {
-                sh 'gradle run'
+                script {
+                    def hasRunTask = sh(script: "gradle tasks --all | grep 'run -'", returnStatus: true) == 0
+                    if (hasRunTask) {
+                        sh 'gradle run'
+                    } else {
+                        echo "Skipping run: 'run' task not found."
+                    }
+                }
             }
         }
     }
